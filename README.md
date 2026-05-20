@@ -1,134 +1,129 @@
-# Inventory Management System
+# Library Management System 
 
 ---
 
 # 1. Introduction
 
-The **StockGuard Inventory Management System** is a console-based retail inventory tracking application developed using **C++** programming language.
+The **Library Management Interface** is a console-based application developed using **C++ programming language**.
+The system is designed to automate and simplify the management of books, library members, and borrowing transactions.
 
-The project is designed to manage retail product inventories efficiently by providing functionalities such as:
+This software enables librarians to:
 
-* Product registration
-* Point-of-sale transaction handling
-* Inventory searching
-* Low stock alerts
-* Product deletion
-* File-based permanent storage
+* Register books
+* Enroll members
+* Issue books
+* Return books
+* Search library catalog
+* Display inventory records
+* Save and load records from files
 
-The system simulates a real-world inventory management environment used in:
-
-* Retail stores
-* Warehouses
-* Supermarkets
-* Department stores
-* Distribution centers
-
-This project demonstrates practical implementation of:
+The project demonstrates practical implementation of:
 
 * Object-Oriented Programming (OOP)
 * File Handling
-* Inventory Tracking Logic
-* Barcode Validation (UPC-A)
-* Transaction Logging
-* Dynamic Data Structures
+* Data Persistence
+* Dynamic Arrays using STL Vector
+* Input Validation
+* Time and Date Management
 
 ---
 
 # 2. Objectives of the Project
 
-The main objectives of this project are:
+The major objectives are:
 
-* To build a complete inventory management system
-* To implement retail product tracking logic
-* To understand file handling in C++
-* To simulate barcode-based product systems
-* To perform stock monitoring operations
-* To develop real-world business management logic
+* To automate traditional library management operations
+* To maintain accurate records of books and members
+* To track borrowed and returned books
+* To implement secure file storage
+* To learn practical OOP implementation in C++
+* To create a modular and reusable software system
 
 ---
 
 # 3. Technologies Used
 
-| Technology    | Purpose                         |
-| ------------- | ------------------------------- |
-| C++           | Core Programming Language       |
-| STL Vector    | Dynamic storage                 |
-| File Handling | Persistent data storage         |
-| OOP Concepts  | Class-based modular programming |
-| StringStream  | Data parsing                    |
-| Time Library  | Timestamp generation            |
+| Technology    | Purpose                   |
+| ------------- | ------------------------- |
+| C++           | Main Programming Language |
+| STL Vector    | Dynamic data storage      |
+| File Handling | Permanent record storage  |
+| StringStream  | Parsing text data         |
+| Time Library  | Due date calculations     |
+| OOP           | Modular design structure  |
 
 ---
 
-# 4. Core Features of the System
+# 4. Key Features
 
 ---
 
-# 4.1 Add New Product
+# 4.1 Book Registration
 
-The system allows:
+The system allows librarians to:
 
-* Product registration
-* UPC validation
-* Retail price setup
-* Stock quantity assignment
-
-### Product Details Stored
-
-* UPC
-* Product Name
-* Category
-* Cost Price
-* Retail Price
-* Stock Quantity
-* Reorder Threshold
+* Add books
+* Store ISBN
+* Store author details
+* Generate unique IDs automatically
 
 ---
 
-# 4.2 POS Sales Transaction
-
-The Point-of-Sale system allows:
-
-* Product barcode scanning
-* Sales processing
-* Automatic stock deduction
-* Sales history recording
-
----
-
-# 4.3 Inventory Search
-
-Users can:
-
-* Search by product name
-* Search by category
-
----
-
-# 4.4 Low Stock Alert System
-
-The system identifies:
-
-* Products below reorder threshold
-* Items needing replenishment
-
----
-
-# 4.5 Product Deletion
+# 4.2 Member Enrollment
 
 Allows:
 
-* Safe removal of obsolete products
-* Soft deletion mechanism
+* New member registration
+* Member ID generation
+* Email storage
 
 ---
 
-# 4.6 File Saving and Loading
+# 4.3 Book Issue System
 
-Stores:
+The software:
 
-* Inventory records
-* Transaction history
+* Issues books to members
+* Prevents duplicate borrowing
+* Generates due dates automatically
+
+---
+
+# 4.4 Return Management
+
+Handles:
+
+* Book returns
+* Late return detection
+* Status synchronization
+
+---
+
+# 4.5 Search Engine
+
+Users can search books by:
+
+* Book title
+* Author name
+
+---
+
+# 4.6 Inventory Reports
+
+Displays:
+
+* Complete book inventory
+* Membership roster
+
+---
+
+# 4.7 File Persistence
+
+System stores records permanently using:
+
+* books_db.txt
+* members_db.txt
+* ledgers_db.txt
 
 ---
 
@@ -136,35 +131,36 @@ Stores:
 
 ```text
 +------------------------------------------------+
-|              USER INTERFACE MENU               |
+|             USER CONSOLE INTERFACE             |
 +------------------------------------------------+
                      |
                      v
 +------------------------------------------------+
-|             INVENTORY SYSTEM CLASS             |
+|              LIBRARY MANAGER CLASS             |
 +------------------------------------------------+
-   |        |          |         |         |
-   v        v          v         v         v
- Add      Search     Sales    Reports   Delete
- Product  Product   System    Alerts    Product
+      |              |               |
+      v              v               v
+   BOOKS          MEMBERS        BORROW RECORDS
+      |              |               |
+      +--------------+---------------+
                      |
                      v
 +------------------------------------------------+
-| inventory_sheet.txt / sales_history.txt        |
+|                FILE STORAGE LAYER              |
 +------------------------------------------------+
 ```
 
 ---
 
-# 6. Object-Oriented Programming Concepts Used
+# 6. OOP Concepts Used
 
-| OOP Concept   | Usage                                  |
-| ------------- | -------------------------------------- |
-| Class         | Product, Transaction, InventorySystem  |
-| Encapsulation | Private data members                   |
-| Constructors  | Product and transaction initialization |
-| Abstraction   | Business logic hidden inside methods   |
-| Modularity    | Separate functions for operations      |
+| OOP Concept   | Usage                           |
+| ------------- | ------------------------------- |
+| Class         | Book, Member, BorrowRecord      |
+| Encapsulation | Private data members            |
+| Constructors  | Object initialization           |
+| Abstraction   | Hidden internal logic           |
+| Modularity    | Separate methods for operations |
 
 ---
 
@@ -172,153 +168,155 @@ Stores:
 
 ---
 
-# 7.1 Product Class
+# 7.1 Book Class
 
-Represents individual retail products.
+Represents books in library inventory.
 
 ---
 
 ## Data Members
 
 ```cpp
-string upc;
-string name;
-string category;
-double costPrice;
-double retailPrice;
-int stockQuantity;
-int reorderPoint;
-bool isDeleted;
+int bookId;
+string title;
+string author;
+string isbn;
+bool isIssued;
 ```
 
 ---
 
 ## Member Functions
 
-| Function           | Purpose                |
-| ------------------ | ---------------------- |
-| getUPC()           | Returns UPC            |
-| getName()          | Returns product name   |
-| getCategory()      | Returns category       |
-| getRetailPrice()   | Returns selling price  |
-| setStockQuantity() | Updates stock          |
-| needsReorder()     | Checks low stock       |
-| toString()         | Formats display output |
+| Function          | Purpose              |
+| ----------------- | -------------------- |
+| getId()           | Returns book ID      |
+| getTitle()        | Returns title        |
+| getAuthor()       | Returns author       |
+| getIsbn()         | Returns ISBN         |
+| getIssuedStatus() | Returns issue state  |
+| setIssuedStatus() | Updates issue status |
+| displayRow()      | Prints formatted row |
 
 ---
 
-# 7.2 Transaction Class
+# 7.2 Member Class
 
-Represents sales transactions.
+Represents registered library members.
 
 ---
 
 ## Data Members
 
 ```cpp
-string transactionId;
-string upc;
-int quantitySold;
-double unitPrice;
-string timestamp;
+int memberId;
+string name;
+string email;
 ```
 
 ---
 
-# 7.3 InventorySystem Class
+# 7.3 BorrowRecord Class
+
+Stores borrowing transaction information.
+
+---
+
+## Data Members
+
+```cpp
+int bookId;
+int memberId;
+time_t issueDate;
+time_t dueDate;
+bool isReturned;
+```
+
+---
+
+# 7.4 LibraryManager Class
+
+Controls the entire application.
 
 Handles:
 
-* Product management
-* Sales management
-* File handling
-* Search operations
-* Reports
+* Book operations
+* Member operations
+* Borrow transactions
+* Searching
+* File operations
 
 ---
 
-# 8. UPC-A Barcode Validation
+# 8. File Handling
 
-The project validates:
-
-* 12-digit UPC-A codes
-* Barcode checksum correctness
+The project uses text files for permanent storage.
 
 ---
 
-# Example Valid UPC
+## Files Used
+
+| File Name      | Purpose             |
+| -------------- | ------------------- |
+| books_db.txt   | Stores books        |
+| members_db.txt | Stores members      |
+| ledgers_db.txt | Stores transactions |
+
+---
+
+# Example Book Database
 
 ```text
-036000291452
+1001|Harry Potter|J.K Rowling|9780747532743|0
+1002|C++ Programming|Bjarne Stroustrup|9780321563842|1
 ```
 
 ---
 
-# Validation Logic
-
-The system:
-
-* Calculates odd/even digit sums
-* Computes check digit
-* Verifies barcode authenticity
-
----
-
-# 9. File Handling
-
-The system uses:
-
-| File                | Purpose                   |
-| ------------------- | ------------------------- |
-| inventory_sheet.txt | Stores products           |
-| sales_history.txt   | Stores sales transactions |
-
----
-
-# Example Inventory File
+# Example Member Database
 
 ```text
-036000291452|Laptop|Electronics|45000|55000|20|5
-123456789012|Keyboard|Accessories|500|900|50|10
+5001|Rahul Sharma|rahul@gmail.com
+5002|Priya K|priya@gmail.com
 ```
 
 ---
 
-# Example Transaction File
+# Example Ledger Database
 
 ```text
-TXN1000|036000291452|2|55000|2026-05-20 10:45
+1001|5001|1716200000|1717409600|0
 ```
 
 ---
 
-# 10. Input Validation
+# 9. Input Validation
 
-The system validates:
+The program validates:
 
-| Validation       | Description                 |
-| ---------------- | --------------------------- |
-| UPC Validation   | Checks barcode authenticity |
-| Empty Inputs     | Prevents blank names        |
-| Price Validation | Rejects invalid prices      |
-| Stock Validation | Prevents negative stock     |
-| Menu Validation  | Handles wrong menu choices  |
+| Validation                 | Purpose                          |
+| -------------------------- | -------------------------------- |
+| Empty Input Check          | Prevents blank fields            |
+| Integer Validation         | Prevents invalid numeric input   |
+| Duplicate Issue Check      | Prevents issuing same book twice |
+| Invalid Member Check       | Ensures valid membership         |
+| Pipe Character Restriction | Prevents file corruption         |
 
 ---
 
-# 11. Program Workflow
+# 10. Program Workflow
 
 ---
 
 ## Step 1
 
-System loads saved inventory.
+System loads saved files.
 
 ---
 
 ## Step 2
 
-Main menu is displayed.
+Main menu appears.
 
 ---
 
@@ -330,63 +328,60 @@ User selects operation.
 
 ## Step 4
 
-Requested operation executes.
+Requested process executes.
 
 ---
 
 ## Step 5
 
-Inventory updates dynamically.
+System updates records dynamically.
 
 ---
 
 ## Step 6
 
-Data saved into files.
+Data saved before exit.
 
 ---
 
-# 12. COMPLETE DETAILED INPUT AND OUTPUT
+# 11. COMPLETE DETAILED INPUT AND OUTPUT
 
 ---
 
-# 12.1 Main Menu
+# 11.1 Main Menu
 
 ## Output
 
 ```text
 =========================================
-     STOCKGUARD INVENTORY SYSTEMS
-=========================================
-1.  Add New Retail Product Asset
-2.  Scan & Log POS Sales Transaction
-3.  Dynamic Stock Search Engine Query
-4.  Print Master Asset Catalog Sheet
-5.  Generate Low Stock Alert Metrics
-6.  Purge Obsolete Core Product SKU
-7.  Commit Local Cache Changes to Disk
-8.  Reload System Master Log Data Files
-0.  Safely Close Session Terminal Pipeline
+      LIBRARY MANAGEMENT INTERFACE
 =========================================
 
-Process Option Routing Request Selection:
+1. Register New Book Asset
+2. Enroll New Active Member
+3. Issue Book Asset (Loan Transaction)
+4. Return Book Asset (Inbound Check-in)
+5. Search Catalog (Title / Author)
+6. Show Entire Inventory Catalog
+7. Show Enrolled Membership Roster
+0. Save Configuration & Exit Session
+
+=========================================
+
+Select routing index parameter option:
 ```
 
 ---
 
-# 12.2 Add New Product
+# 11.2 Add New Book
 
 ## User Input
 
 ```text
 1
-036000291452
-Gaming Laptop
-Electronics
-45000
-55000
-20
-5
+Harry Potter and the Goblet of Fire
+J.K Rowling
+9780439139601
 ```
 
 ---
@@ -394,41 +389,32 @@ Electronics
 ## System Output
 
 ```text
-=== REGISTER NEW PRODUCT INVENTORY ===
+=== REGISTER NEW BOOK ASSET ===
 
-Enter 12-Digit UPC:
-036000291452
+Enter Book Title :
+Harry Potter and the Goblet of Fire
 
-Enter Product Name:
-Gaming Laptop
+Enter Author Name:
+J.K Rowling
 
-Enter Category Group:
-Electronics
+Enter ISBN Code:
+9780439139601
 
-Enter Wholesale/Cost Price ($):
-45000
-
-Enter Target Retail Price ($):
-55000
-
-Enter Initial Stock Level (0-5000):
-20
-
-Enter Reorder Warning Threshold Level (1-100):
-5
-
-SKU item 'Gaming Laptop' registered seamlessly into current system tracking.
+>> Success:
+Book added with tracking System ID: 1001
 ```
 
 ---
 
-# 12.3 Invalid UPC Entry
+# 11.3 Add Another Book
 
 ## User Input
 
 ```text
 1
-123456789000
+C++ Data Structures
+Bjarne Stroustrup
+9780321563842
 ```
 
 ---
@@ -436,146 +422,20 @@ SKU item 'Gaming Laptop' registered seamlessly into current system tracking.
 ## System Output
 
 ```text
-=== REGISTER NEW PRODUCT INVENTORY ===
-
-Enter 12-Digit UPC:
-123456789000
-
-Invalid UPC Checksum!
-
-Hint: Must be exactly 12 digits matching standard barcode metrics.
-
-Please try again.
+>> Success:
+Book added with tracking System ID: 1002
 ```
 
 ---
 
-# 12.4 Add Another Product
-
-## User Input
-
-```text
-1
-042100005264
-Mechanical Keyboard
-Accessories
-1500
-2500
-50
-10
-```
-
----
-
-## System Output
-
-```text
-SKU item 'Mechanical Keyboard'
-registered seamlessly into current system tracking.
-```
-
----
-
-# 12.5 Display All Inventory
-
-## User Input
-
-```text
-4
-```
-
----
-
-## System Output
-
-```text
-=== SYSTEM SHEET MASTER OVERVIEW INVENTORY ===
-
-UPC           Item Name            Category       Retail    Stock
------------------------------------------------------------------------
-
-036000291452  Gaming Laptop        Electronics    $55000    20
-042100005264  Mechanical Keyboard  Accessories    $2500     50
-```
-
----
-
-# 12.6 Search Inventory
-
-## User Input
-
-```text
-3
-Electronics
-```
-
----
-
-## System Output
-
-```text
-=== INVENTORY QUERY SEARCH ===
-
-Query string (Name/Category):
-Electronics
-
-UPC           Item Name            Category       Retail    Stock
-=======================================================================
-
-036000291452  Gaming Laptop        Electronics    $55000    20
-```
-
----
-
-# 12.7 Search Product by Name
-
-## User Input
-
-```text
-3
-Keyboard
-```
-
----
-
-## System Output
-
-```text
-UPC           Item Name            Category       Retail    Stock
-=======================================================================
-
-042100005264  Mechanical Keyboard  Accessories    $2500     50
-```
-
----
-
-# 12.8 Product Not Found Search
-
-## User Input
-
-```text
-3
-Mobile
-```
-
----
-
-## System Output
-
-```text
-No specific retail inventory targets fit context filter details.
-```
-
----
-
-# 12.9 Process Sales Transaction
+# 11.4 Enroll New Member
 
 ## User Input
 
 ```text
 2
-036000291452
-2
+Rahul Sharma
+rahul@gmail.com
 ```
 
 ---
@@ -583,31 +443,28 @@ No specific retail inventory targets fit context filter details.
 ## System Output
 
 ```text
-=== PROCESS RETAIL CASH POINT SALE ===
+=== REGISTER NEW LIBRARY MEMBER ===
 
-Scan Item UPC:
-036000291452
+Enter Full Name :
+Rahul Sharma
 
-Discovered: Gaming Laptop | Available units: 20
+Enter Email Addr:
+rahul@gmail.com
 
-Enter Quantity to Purchase (1-20):
-2
-
-Sale processed cleanly.
-
-Total Due: $110000.00
+>> Success:
+Membership account issued card ID: 5001
 ```
 
 ---
 
-# 12.10 Low Stock Warning Sale
+# 11.5 Enroll Another Member
 
 ## User Input
 
 ```text
 2
-036000291452
-18
+Priya K
+priya@gmail.com
 ```
 
 ---
@@ -615,68 +472,18 @@ Total Due: $110000.00
 ## System Output
 
 ```text
-Sale processed cleanly.
-
-Total Due: $990000.00
-
-[WARNING]:
-Running critically low on 'Gaming Laptop' stock items.
+>> Success:
+Membership account issued card ID: 5002
 ```
 
 ---
 
-# 12.11 Out of Stock Scenario
-
-## User Input
-
-```text
-2
-036000291452
-1
-```
-
----
-
-## System Output
-
-```text
-Operation aborted:
-'Gaming Laptop' is completely out of stock!
-```
-
----
-
-# 12.12 Generate Low Stock Report
-
-## User Input
-
-```text
-5
-```
-
----
-
-## System Output
-
-```text
-=== CRITICAL LOW REORDER SYSTEM DATA REPORT ===
-
-UPC           Item Name            Category       Retail    Current Stock
------------------------------------------------------------------------
-
-036000291452  Gaming Laptop        Electronics    $55000    0
-[Needs 15 replenishment units]
-```
-
----
-
-# 12.13 Delete Product
+# 11.6 Display Book Catalog
 
 ## User Input
 
 ```text
 6
-042100005264
 ```
 
 ---
@@ -684,18 +491,18 @@ UPC           Item Name            Category       Retail    Current Stock
 ## System Output
 
 ```text
-Provide target UPC data line sequence to clear tracking reference:
+=== INTERNAL REGISTER FILE INVENTORY ===
 
-042100005264
+ID      Title                         Author                   ISBN           Status
+-------------------------------------------------------------------------------------
 
-Tracking data line for element item
-'Mechanical Keyboard'
-set to safe drop state.
+1001    Harry Potter and the Gob...  J.K Rowling              9780439139601 Available
+1002    C++ Data Structures          Bjarne Stroustrup        9780321563842 Available
 ```
 
 ---
 
-# 12.14 Save Data to Disk
+# 11.7 Display Member Roster
 
 ## User Input
 
@@ -708,19 +515,25 @@ set to safe drop state.
 ## System Output
 
 ```text
-File streaming pipelines finalized.
+=== REGISTERED USERS ACTIVE ROSTER ===
 
-Data safe storage state verified.
+Card ID  Full Name                Primary Email Interface Address
+-------------------------------------------------------------------
+
+5001     Rahul Sharma             rahul@gmail.com
+5002     Priya K                  priya@gmail.com
 ```
 
 ---
 
-# 12.15 Reload Data Files
+# 11.8 Issue Book Successfully
 
 ## User Input
 
 ```text
-8
+3
+1001
+5001
 ```
 
 ---
@@ -728,12 +541,209 @@ Data safe storage state verified.
 ## System Output
 
 ```text
-Data persistence structures mapped to localized memory pools successfully.
+=== PROCESS BOOK CHECKOUT ===
+
+Enter Target Book ID:
+1001
+
+Enter Checking Member ID:
+5001
+
+>> Success:
+Checkout complete!
+
+Asset Allocated:
+"Harry Potter and the Goblet of Fire"
+
+Issued To:
+Rahul Sharma
+
+Return Deadline:
+2026-06-03
 ```
 
 ---
 
-# 12.16 Exit Application
+# 11.9 Attempt to Issue Borrowed Book
+
+## User Input
+
+```text
+3
+1001
+5002
+```
+
+---
+
+## System Output
+
+```text
+=== PROCESS BOOK CHECKOUT ===
+
+Enter Target Book ID:
+1001
+
+>> Error:
+Target book is already loaned out.
+```
+
+---
+
+# 11.10 Invalid Member ID
+
+## User Input
+
+```text
+3
+1002
+9999
+```
+
+---
+
+## System Output
+
+```text
+>> Error:
+Missing active membership record matching ID 9999
+```
+
+---
+
+# 11.11 Search Books by Title
+
+## User Input
+
+```text
+5
+Harry
+```
+
+---
+
+## System Output
+
+```text
+=== QUERY CATALOG INDEXES ===
+
+ID      Title                         Author                   ISBN           Status
+=====================================================================================
+
+1001    Harry Potter and the Gob...  J.K Rowling              9780439139601 Checked Out
+```
+
+---
+
+# 11.12 Search Books by Author
+
+## User Input
+
+```text
+5
+Bjarne
+```
+
+---
+
+## System Output
+
+```text
+1002    C++ Data Structures          Bjarne Stroustrup        9780321563842 Available
+```
+
+---
+
+# 11.13 Book Not Found Search
+
+## User Input
+
+```text
+5
+Python
+```
+
+---
+
+## System Output
+
+```text
+No records match search criterion input.
+```
+
+---
+
+# 11.14 Return Book Successfully
+
+## User Input
+
+```text
+4
+1001
+```
+
+---
+
+## System Output
+
+```text
+=== PROCESS BOOK RETURN ===
+
+Enter Returned Book ID:
+1001
+
+>> Success:
+File check-in verified.
+
+Check-in received within the allocated timeline window.
+```
+
+---
+
+# 11.15 Late Return Case
+
+## User Input
+
+```text
+4
+1002
+```
+
+---
+
+## System Output
+
+```text
+>> Success:
+File check-in verified.
+
+[ALERT]:
+This transaction is flag-marked LATE.
+```
+
+---
+
+# 11.16 Return Already Available Book
+
+## User Input
+
+```text
+4
+1001
+```
+
+---
+
+## System Output
+
+```text
+>> Notification:
+This item is already marked safe inside internal inventory vaults.
+```
+
+---
+
+# 11.17 Exit Application
 
 ## User Input
 
@@ -746,105 +756,137 @@ Data persistence structures mapped to localized memory pools successfully.
 ## System Output
 
 ```text
-Session environment context destruction sequence complete.
+>> Storage notification:
+Snapshot synchronization tables safely secured onto system disks.
 
-Exiting.
+Closing engine tasks context safely.
+
+Core environments dropped.
+
+Goodbye.
 ```
 
 ---
 
-# 13. Advantages of the System
+# 12. Advantages of the System
 
-* Fast inventory tracking
-* Barcode validation support
-* Dynamic stock monitoring
-* Sales history tracking
-* Automatic low stock alerts
-* Persistent file storage
-* Beginner-friendly implementation
+* Simple and easy to use
+* Efficient digital record management
+* Permanent file storage
+* Automatic due-date tracking
+* Case-insensitive searching
+* Prevents duplicate borrowing
+* Structured modular design
 
 ---
 
-# 14. Limitations of the System
+# 13. Limitations
 
-* No graphical interface
+* Console-based interface only
 * No database integration
-* Single-user operation
-* No cloud synchronization
-* No employee authentication
-* No invoice printing
+* No barcode scanning
+* No admin authentication
+* Single-user environment
+* No online access
 
 ---
 
-# 15. Future Enhancements
+# 14. Future Enhancements
 
 ---
 
-# 15.1 Database Integration
+# 14.1 Database Integration
 
-Replace text files with:
+Upgrade file handling into:
 
 * MySQL
-* MongoDB
 * PostgreSQL
+* MongoDB
 
 ---
 
-# 15.2 Barcode Scanner Integration
+# 14.2 GUI Development
 
-Add:
-
-* Real barcode scanner support
-* QR code inventory tracking
-
----
-
-# 15.3 Billing System
-
-Generate:
-
-* Customer invoices
-* GST bills
-* Receipt printing
-
----
-
-# 15.4 Authentication System
-
-Add:
-
-* Admin login
-* Employee accounts
-* Password protection
-
----
-
-# 15.5 GUI Dashboard
-
-Develop graphical software using:
+Create graphical interface using:
 
 * Qt Framework
-* Electron
-* Web Dashboard
+* JavaFX
+* Web dashboard
 
 ---
 
-# 15.6 Sales Analytics
+# 14.3 Fine Management System
 
-Implement:
+Automatically:
 
-* Revenue reports
-* Best-selling products
-* Profit calculations
+* Calculate penalties
+* Generate payment reports
 
 ---
 
-# 15.7 Cloud Storage
+# 14.4 Barcode/RFID Support
 
 Enable:
 
-* Online inventory sync
-* Multi-branch inventory access
+* Barcode scanners
+* RFID book tracking
+
+---
+
+# 14.5 Authentication System
+
+Add:
+
+* Librarian login
+* Admin access
+* Password encryption
+
+---
+
+# 14.6 Online Reservation
+
+Allow users to:
+
+* Reserve books remotely
+* Renew books online
+
+---
+
+# 14.7 Email Notification System
+
+Send:
+
+* Due reminders
+* Late return alerts
+* Membership notifications
+
+---
+
+# 15. Compilation and Execution
+
+---
+
+# Compile Program
+
+```bash
+g++ main.cpp -o library
+```
+
+---
+
+# Run Program
+
+## Windows
+
+```bash
+library.exe
+```
+
+## Linux / Mac
+
+```bash
+./library
+```
 
 ---
 
@@ -857,46 +899,19 @@ Enable:
 ```bash
 git clone https://github.com/Jayavardhani05/Library-Management-System.git
 ```
+
 ---
 
-# Navigate to Folder
+# Move Into Project Directory
 
 ```bash
-cd Library-Management-System
+cd Library Management System
 
 ```
 
 ---
 
-# Compile Program
-
-```bash
-g++ main.cpp -o inventory
-```
-
----
-
-# Run Program
-
-## Windows
-
-```bash
-inventory.exe
-```
-
-## Linux / Mac
-
-```bash
-./inventory
-```
-
----
-
-# 17. Git Commands for Uploading
-
----
-
-## Initialize Git
+# Initialize Git
 
 ```bash
 git init
@@ -904,7 +919,7 @@ git init
 
 ---
 
-## Add Files
+# Add Files
 
 ```bash
 git add .
@@ -912,15 +927,15 @@ git add .
 
 ---
 
-## Commit Changes
+# Commit Files
 
 ```bash
-git commit -m "Initial commit"
+git commit -m "Initial project commit"
 ```
 
 ---
 
-## Add Remote Repository
+# Connect GitHub Repository
 
 ```bash
 git remote add origin https://github.com/Jayavardhani05/Library-Management-System.git
@@ -928,7 +943,7 @@ git remote add origin https://github.com/Jayavardhani05/Library-Management-Syste
 
 ---
 
-## Push Repository
+# Push Project
 
 ```bash
 git branch -M main
@@ -937,46 +952,43 @@ git push -u origin main
 
 ---
 
-# 18. Folder Structure
+# 17. Project Folder Structure
 
 ```text
-Inventory-Management-System/
+Library-Management-System/
 │
-├── main.cpp
-├── inventory_sheet.txt
-├── sales_history.txt
-├── README.md
-└── .gitignore
+├── Library Management System.cpp
+└── README.md
 ```
 
 ---
 
-# 19. README.md Short Description
+# 18. README.md Description
 
 ```md
-A console-based Inventory Management System built using C++ and File Handling.
+Library Management System developed using C++ and File Handling.
 
-The system supports:
-- Product registration
-- UPC barcode validation
-- POS sales transactions
-- Inventory search
-- Low stock alerts
-- Persistent file storage
+Features:
+- Book registration
+- Member enrollment
+- Book issue and return
+- Catalog searching
+- Due date management
+- Persistent storage using files
 ```
 
 ---
 
-# 20. Conclusion
+# 19. Conclusion
 
-The **StockGuard Inventory Management System** successfully demonstrates how modern inventory and retail tracking systems can be implemented using C++ and file handling concepts.
+The **Library Management Interface** successfully demonstrates how real-world library operations can be implemented using C++ and Object-Oriented Programming concepts.
 
-The project effectively combines:
+The project provides:
 
-* Object-Oriented Programming
-* Barcode validation
-* Inventory control logic
-* Sales transaction management
-* File persistence mechanisms
+* Book inventory tracking
+* Membership management
+* Borrow transaction processing
+* File-based persistence
+* Search and reporting functionality
 
-This system serves as a strong foundation for developing advanced retail management software and provides practical exposure to real-world inventory tracking operations.
+This application serves as an excellent beginner-to-intermediate level project for understanding software system design, file handling, and transaction management in C++.
