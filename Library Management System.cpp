@@ -10,404 +10,376 @@
 
 using namespace std;
 
-class Product {
-private:
-    string upc; 
-    string name;
-    string category;
-    double costPrice;
-    double retailPrice;
-    int stockQuantity;
-    int reorderPoint;
-    bool isDeleted;
+const int LOAN_PERIOD_DAYS = 14;
 
-public:
-    Product() : upc(""), name(""), category(""), costPrice(0.0), retailPrice(0.0), stockQuantity(0), reorderPoint(5), isDeleted(false) {}
-
-    Product(string upc, string name, string cat, double cost, double retail, int qty, int reorder = 5)
-        : upc(upc), name(name), category(cat), costPrice(cost), retailPrice(retail), stockQuantity(qty), reorderPoint(reorder), isDeleted(false) {}
-
-    string getUPC() const { return upc; }
-    string getName() const { return name; }
-    string getCategory() const { return category; }
-    double getCostPrice() const { return costPrice; }
-    double getRetailPrice() const { return retailPrice; }
-    int getStockQuantity() const { return stockQuantity; }
-    int getReorderPoint() const { return reorderPoint; }
-    bool getIsDeleted() const { return isDeleted; }
-
-    void setStockQuantity(int qty) { if (qty >= 0) stockQuantity = qty; }
-    void setDeleted(bool status) { isDeleted = status; }
-
-    bool needsReorder() const { return stockQuantity <= reorderPoint && !isDeleted; }
-
-    string toString() const {
-        stringstream ss;
-        ss << left << setw(14) << upc << setw(22) << name << setw(15) << category 
-           << fixed << setprecision(2) << "$" << setw(9) << retailPrice << setw(10) << stockQuantity;
-        return ss.str();
-    }
-};
-
-class Transaction {
-private:
-    string transactionId;
-    string upc;
-    int quantitySold;
-    double unitPrice;
-    string timestamp;
-
-public:
-    Transaction() : transactionId(""), upc(""), quantitySold(0), unitPrice(0.0), timestamp("") {}
-
-    Transaction(string id, string upc, int qty, double price, string time)
-        : transactionId(id), upc(upc), quantitySold(qty), unitPrice(price), timestamp(time) {}
-
-    string getTransactionId() const { return transactionId; }
-    string getUPC() const { return upc; }
-    int getQuantitySold() const { return quantitySold; }
-    double getUnitPrice() const { return unitPrice; }
-    double getTotalRevenue() const { return quantitySold * unitPrice; }
-    string getTimestamp() const { return timestamp; }
-};
-
-bool isValidUPCA(const string& upc) {
-    string clean;
-    for (char c : upc) { if (isdigit(c)) clean += c; }
-    if (clean.length() != 12) return false;
-
-    int oddSum = 0, evenSum = 0;
-    for (int i = 0; i < 11; i++) {
-        int digit = clean[i] - '0';
-        if (i % 2 == 0) oddSum += digit; 
-        else evenSum += digit;
-    }
-    int total = (oddSum * 3) + evenSum;
-    int checkDigit = (10 - (total % 10)) % 10;
-    
-    return checkDigit == (clean[11] - '0');
-}
-
-string getCurrentTimestamp() {
-    time_t now = time(0);
-    tm *ltm = localtime(&now);
+string formatDate(time_t rawTime) {
+    tm *timeInfo = localtime(&rawTime);
     stringstream ss;
-    ss << 1900 + ltm->tm_year << "-" 
-       << setfill('0') << setw(2) << 1 + ltm->tm_mon << "-" 
-       << setw(2) << ltm->tm_mday << " " 
-       << setw(2) << ltm->tm_hour << ":" 
-       << setw(2) << ltm->tm_min;
+    ss << 1900 + timeInfo->tm_year << "-"
+       << setfill('0') << setw(2) << 1 + timeInfo->tm_mon << "-"
+       << setw(2) << timeInfo->tm_mday;
     return ss.str();
 }
 
-class InventorySystem {
-private:
-    vector<Product> products;
-    vector<Transaction> history;
-    string storeName;
+string toLower(string str) {
+    transform(str.begin(), str.end(), str.begin(), [](unsigned char c){ return tolower(c); });
+    return str;
+}
 
-    // Direct pointers data accessors
-    Product* findProduct(const string& upc) {
-        for (auto& prod : products) {
-            if (prod.getUPC() == upc) return &prod;
-        }
+
+
+class Book {
+private:
+    int bookId;
+    string title;
+    string author;
+    string isbn;
+    bool isIssued;
+
+public:
+    Book() : bookId(0), title(""), author(""), isbn(""), isIssued(false) {}
+    Book(int id, string t, string a, string i, bool issued = false) 
+        : bookId(id), title(t), author(a), isbn(i), isIssued(issued) {}
+
+    int getId() const { return bookId; }
+    string getTitle() const { return title; }
+    string getAuthor() const { return author; }
+    string getIsbn() const { return isbn; }
+    bool getIssuedStatus() const { return isIssued; }
+
+    void setIssuedStatus(bool status) { isIssued = status; }
+
+    void displayRow() const {
+        cout << left << setw(8) << bookId 
+             << setw(30) << (title.length() > 28 ? title.substr(0, 25) + "..." : title)
+             << setw(25) << (author.length() > 23 ? author.substr(0, 20) + "..." : author) 
+             << setw(15) << isbn 
+             << (isIssued ? "Checked Out" : "Available") << "\n";
+    }
+};
+
+class Member {
+private:
+    int memberId;
+    string name;
+    string email;
+
+public:
+    Member() : memberId(0), name(""), email("") {}
+    Member(int id, string n, string e) : memberId(id), name(n), email(e) {}
+
+    int getId() const { return memberId; }
+    string getName() const { return name; }
+    string getEmail() const { return email; }
+
+    void displayRow() const {
+        cout << left << setw(10) << memberId 
+             << setw(25) << (name.length() > 23 ? name.substr(0, 20) + "..." : name) 
+             << email << "\n";
+    }
+};
+
+class BorrowRecord {
+private:
+    int bookId;
+    int memberId;
+    time_t issueDate;
+    time_t dueDate;
+    bool isReturned;
+
+public:
+    BorrowRecord() : bookId(0), memberId(0), issueDate(0), dueDate(0), isReturned(false) {}
+    BorrowRecord(int bId, int mId, time_t issue, time_t due, bool returned = false)
+        : bookId(bId), memberId(mId), issueDate(issue), dueDate(due), isReturned(returned) {}
+
+    int getBookId() const { return bookId; }
+    int getMemberId() const { return memberId; }
+    time_t getIssueDate() const { return issueDate; }
+    time_t getDueDate() const { return dueDate; }
+    bool getReturnedStatus() const { return isReturned; }
+
+    void markAsReturned() { isReturned = true; }
+};
+
+
+class LibraryManager {
+private:
+    vector<Book> books;
+    vector<Member> members;
+    vector<BorrowRecord> records;
+    
+    int nextBookId;
+    int nextMemberId;
+
+    Book* findBookPointer(int id) {
+        for (auto& b : books) { if (b.getId() == id) return &b; }
         return nullptr;
     }
 
-    bool getValidUPC(string& upc) {
-        int attempts = 0;
+    Member* findMemberPointer(int id) {
+        for (auto& m : members) { if (m.getId() == id) return &m; }
+        return nullptr;
+    }
+
+    void getValidatedString(string& target, const string& prompt) {
         while (true) {
-            cout << (attempts == 0 ? "Enter 12-Digit UPC: " : "Invalid UPC Checksum! ");
-            attempts++;
-            getline(cin >> ws, upc);
-            if (isValidUPCA(upc)) return true;
-            if (attempts == 1) cout << "Hint: Must be exactly 12 digits matching standard barcode metrics.\n";
-            cout << "Please try again.\n";
+            cout << prompt;
+            getline(cin >> ws, target);
+            if (!target.empty() && target.find('|') == string::npos) return;
+            cout << "Invalid entry: Text cannot be empty or contain standard divider keys ('|').\n";
         }
     }
 
-    bool getValidPrice(double& price, const string& context) {
-        int attempts = 0;
+    int getValidatedInt(const string& prompt) {
+        int inputVal;
         while (true) {
-            cout << "Enter " << context << " Price ($): ";
-            attempts++;
-            string input;
-            getline(cin >> ws, input);
-            try {
-                price = stod(input);
-                if (price >= 0.01 && price <= 10000.0) return true;
-            } catch (...) {}
-            cout << "Invalid monetary amount! Enter a value between 0.01 and 10000.00.\n";
-        }
-    }
-
-    bool getValidInt(int& val, const string& label, int minV, int maxV) {
-        while (true) {
-            cout << "Enter " << label << " (" << minV << "-" << maxV << "): ";
-            string input;
-            getline(cin >> ws, input);
-            try {
-                val = stoi(input);
-                if (val >= minV && val <= maxV) return true;
-            } catch (...) {}
-            cout << "Out of bounds numerical entry. Try again.\n";
-        }
-    }
-
-    bool getNonEmptyString(string& str, const string& label) {
-        while (true) {
-            cout << "Enter " << label << ": ";
-            getline(cin >> ws, str);
-            if (!str.empty()) return true;
-            cout << label << " field cannot be completely blank.\n";
+            cout << prompt;
+            if (cin >> inputVal) {
+                cin.ignore(10000, '\n');
+                return inputVal;
+            }
+            cout << "Invalid entry: Please enter numeric digits only.\n";
+            cin.clear();
+            cin.ignore(10000, '\n');
         }
     }
 
 public:
-    InventorySystem(string name) : storeName(name) {}
+    LibraryManager() : nextBookId(1001), nextMemberId(5001) {}
 
-    void addProduct() {
-        cout << "\n=== REGISTER NEW PRODUCT INVENTORY ===\n";
-        string upc, name, cat;
-        double cost, retail;
-        int qty, reorder;
+    void addBook() {
+        cout << "\n=== REGISTER NEW BOOK ASSET ===\n";
+        string title, author, isbn;
+        getValidatedString(title, "Enter Book Title : ");
+        getValidatedString(author, "Enter Author Name: ");
+        getValidatedString(isbn, "Enter ISBN Code  : ");
 
-        if (!getValidUPC(upc)) return;
-        if (findProduct(upc) && !findProduct(upc)->getIsDeleted()) {
-            cout << "Product code clash! UPC standard " << upc << " already exists.\n";
-            return;
-        }
-
-        if (!getNonEmptyString(name, "Product Name")) return;
-        if (!getNonEmptyString(cat, "Category Group")) return;
-        if (!getValidPrice(cost, "Wholesale/Cost")) return;
-        if (!getValidPrice(retail, "Target Retail")) return;
-        if (!getValidInt(qty, "Initial Stock Level", 0, 5000)) return;
-        if (!getValidInt(reorder, "Reorder Warning Threshold Level", 1, 100)) return;
-
-        products.emplace_back(upc, name, cat, cost, retail, qty, reorder);
-        cout << "\nSKU item '" << name << "' registered seamlessly into current system tracking.\n";
+        books.emplace_back(nextBookId++, title, author, isbn);
+        cout << ">> Success: Book added with tracking System ID: " << nextBookId - 1 << "\n";
     }
 
-    void registerSale() {
-        cout << "\n=== PROCESS RETAIL CASH POINT SALE ===\n";
-        string upc;
-        cout << "Scan Item UPC: ";
-        getline(cin >> ws, upc);
+    void addMember() {
+        cout << "\n=== REGISTER NEW LIBRARY MEMBER ===\n";
+        string name, email;
+        getValidatedString(name, "Enter Full Name : ");
+        getValidatedString(email, "Enter Email Addr: ");
 
-        Product* prod = findProduct(upc);
-        if (!prod || prod->getIsDeleted()) {
-            cout << "Item variant out of database tracking system reach.\n";
-            return;
-        }
-
-        if (prod->getStockQuantity() <= 0) {
-            cout << "Operation aborted: '" << prod->getName() << "' is completely out of stock!\n";
-            return;
-        }
-
-        int requestedQty;
-        cout << "Discovered: " << prod->getName() << " | Available units: " << prod->getStockQuantity() << "\n";
-        if (!getValidInt(requestedQty, "Quantity to Purchase", 1, prod->getStockQuantity())) return;
-
-        
-        prod->setStockQuantity(prod->getStockQuantity() - requestedQty);
-        
-        string txnId = "TXN" + to_string(1000 + history.size());
-        history.emplace_back(txnId, upc, requestedQty, prod->getRetailPrice(), getCurrentTimestamp());
-
-        cout << "\nSale processed cleanly. Total Due: $" << fixed << setprecision(2) << (requestedQty * prod->getRetailPrice()) << "\n";
-        if(prod->needsReorder()) {
-            cout << "[WARNING]: Running critically low on '" << prod->getName() << "' stock items.\n";
-        }
+        members.emplace_back(nextMemberId++, name, email);
+        cout << ">> Success: Membership account issued card ID: " << nextMemberId - 1 << "\n";
     }
 
-    void searchInventory() {
-        string search;
-        cout << "\n=== INVENTORY QUERY SEARCH ===\nQuery string (Name/Category): ";
-        getline(cin >> ws, search);
+    void issueBook() {
+        cout << "\n=== PROCESS BOOK CHECKOUT ===\n";
+        int bId = getValidatedInt("Enter Target Book ID: ");
+        Book* book = findBookPointer(bId);
 
-        cout << "\n" << left << setw(14) << "UPC" << setw(22) << "Item Name" << setw(15) << "Category" << setw(10) << "Retail" << setw(10) << "Stock" << endl;
-        cout << string(71, '=') << endl;
+        if (!book) { cout << ">> Error: Missing asset matching ID " << bId << "\n"; return; }
+        if (book->getIssuedStatus()) { cout << ">> Error: Target book is already loaned out.\n"; return; }
 
-        bool hits = false;
-        for (const auto& p : products) {
-            if (p.getIsDeleted()) continue;
-            if (p.getName().find(search) != string::npos || p.getCategory().find(search) != string::npos) {
-                cout << p.toString() << endl;
-                hits = true;
-            }
-        }
-        if (!hits) cout << "No specific retail inventory targets fit context filter details.\n";
+        int mId = getValidatedInt("Enter Checking Member ID: ");
+        Member* member = findMemberPointer(mId);
+        if (!member) { cout << ">> Error: Missing active membership record matching ID " << mId << "\n"; return; }
+
+        time_t standardNow = time(0);
+        time_t absoluteDue = standardNow + (LOAN_PERIOD_DAYS * 24 * 60 * 60);
+
+        book->setIssuedStatus(true);
+        records.emplace_back(bId, mId, standardNow, absoluteDue, false);
+
+        cout << "\n>> Success: Checkout complete!\n";
+        cout << "   Asset Allocated: \"" << book->getTitle() << "\"\n";
+        cout << "   Issued To      : " << member->getName() << "\n";
+        cout << "   Return Deadline: " << formatDate(absoluteDue) << "\n";
     }
 
-    void displayLowStockReport() const {
-        cout << "\n=== CRITICAL LOW REORDER SYSTEM DATA REPORT ===\n";
-        cout << left << setw(14) << "UPC" << setw(22) << "Item Name" << setw(15) << "Category" << setw(10) << "Retail" << setw(10) << "Current Stock" << endl;
-        cout << string(71, '-') << endl;
+    void returnBook() {
+        cout << "\n=== PROCESS BOOK RETURN ===\n";
+        int bId = getValidatedInt("Enter Returned Book ID: ");
+        Book* book = findBookPointer(bId);
 
-        bool cleanState = true;
-        for (const auto& p : products) {
-            if (p.needsReorder()) {
-                cout << p.toString() << " [Needs " << (p.getReorderPoint() * 3) << " replenishment units]" << endl;
-                cleanState = false;
-            }
-        }
-        if (cleanState) cout << "All clear. Wholesale tracking metrics reporting healthy unit capacity targets.\n";
-    }
+        if (!book) { cout << ">> Error: No structural matching record tracking matches ID " << bId << "\n"; return; }
+        if (!book->getIssuedStatus()) { cout << ">> Notification: This item is already marked safe inside internal inventory vaults.\n"; return; }
 
-    void displayAllInventory() const {
-        cout << "\n=== SYSTEM SHEET MASTER OVERVIEW INVENTORY ===\n";
-        cout << left << setw(14) << "UPC" << setw(22) << "Item Name" << setw(15) << "Category" << setw(10) << "Retail" << setw(10) << "Stock" << endl;
-        cout << string(71, '-') << endl;
-
-        int activeItemsCount = 0;
-        for (const auto& p : products) {
-            if (!p.getIsDeleted()) {
-                cout << p.toString() << endl;
-                activeItemsCount++;
-            }
-        }
-        if (activeItemsCount == 0) cout << "System currently registers zero core product asset records.\n";
-    }
-
-    void deleteProduct() {
-        string upc;
-        cout << "\nProvide target UPC data line sequence to clear tracking reference: ";
-        getline(cin >> ws, upc);
-
-        Product* prod = findProduct(upc);
-        if (prod && !prod->getIsDeleted()) {
-            prod->setDeleted(true);
-            cout << "\nTracking data line for element item '" << prod->getName() << "' set to safe drop state.\n";
-        } else {
-            cout << "Target element was either already purged or was missing from index structures.\n";
-        }
-    }
-
-    void saveData() const {
-        ofstream prodOut("inventory_sheet.txt");
-        ofstream txnOut("sales_history.txt");
-
-        for (const auto& p : products) {
-            if (!p.getIsDeleted()) {
-                prodOut << p.getUPC() << "|" << p.getName() << "|" << p.getCategory() << "|"
-                        << p.getCostPrice() << "|" << p.getRetailPrice() << "|" << p.getStockQuantity() << "|"
-                        << p.getReorderPoint() << "\n";
-            }
-        }
-
-        for (const auto& t : history) {
-            txnOut << t.getTransactionId() << "|" << t.getUPC() << "|" << t.getQuantitySold() << "|"
-                   << t.getUnitPrice() << "|" << t.getTimestamp() << "\n";
-        }
-        cout << "\nFile streaming pipelines finalized. Data safe storage state verified.\n";
-    }
-
-    void loadData() {
-        ifstream prodIn("inventory_sheet.txt");
-        ifstream txnIn("sales_history.txt");
-        string line;
-
-        products.clear();
-        history.clear();
-
-        if (prodIn.is_open()) {
-            while (getline(prodIn, line)) {
-                stringstream ss(line);
-                string upc, name, cat, s_cost, s_retail, s_qty, s_reorder;
+        bool updated = false;
+        for (auto& rec : records) {
+            if (rec.getBookId() == bId && !rec.getReturnedStatus()) {
+                rec.markAsReturned();
+                book->setIssuedStatus(false);
+                updated = true;
                 
-                getline(ss, upc, '|');
-                getline(ss, name, '|');
-                getline(ss, cat, '|');
-                getline(ss, s_cost, '|');
-                getline(ss, s_retail, '|');
-                getline(ss, s_qty, '|');
-                getline(ss, s_reorder, '|');
+                time_t currentTime = time(0);
+                cout << ">> Success: File check-in verified.\n";
+                if (currentTime > rec.getDueDate()) {
+                    cout << "   [ALERT]: This transaction is flag-marked LATE.\n";
+                } else {
+                    cout << "   Check-in received within the allocated timeline window.\n";
+                }
+                break;
+            }
+        }
+        if (!updated) {
+            book->setIssuedStatus(false); 
+            cout << ">> System sync: Fixed internal loan discrepancy flags.\n";
+        }
+    }
 
-                if (!upc.empty() && isValidUPCA(upc)) {
-                    products.emplace_back(upc, name, cat, stod(s_cost), stod(s_retail), stoi(s_qty), stoi(s_reorder));
+    void searchBooks() {
+        cout << "\n=== QUERY CATALOG INDEXES ===\n";
+        string filterTerms;
+        getValidatedString(filterTerms, "Enter search keyword (Title/Author Name): ");
+        string phrase = toLower(filterTerms);
+
+        cout << "\n" << left << setw(8) << "ID" << setw(30) << "Title" << setw(25) << "Author" << setw(15) << "ISBN" << "Status" << "\n";
+        cout << string(85, '=') << "\n";
+
+        bool matchesFound = false;
+        for (const auto& b : books) {
+            if (toLower(b.getTitle()).find(phrase) != string::npos || toLower(b.getAuthor()).find(phrase) != string::npos) {
+                b.displayRow();
+                matchesFound = true;
+            }
+        }
+        if (!matchesFound) cout << "No records match search criterion input.\n";
+    }
+
+    void listAllBooks() const {
+        cout << "\n=== INTERNAL REGISTER FILE INVENTORY ===\n";
+        cout << left << setw(8) << "ID" << setw(30) << "Title" << setw(25) << "Author" << setw(15) << "ISBN" << "Status" << "\n";
+        cout << string(85, '-') << "\n";
+
+        if (books.empty()) { cout << "System dynamic records file tracking tables are currently empty.\n"; return; }
+        for (const auto& b : books) b.displayRow();
+    }
+
+    void listAllMembers() const {
+        cout << "\n=== REGISTERED USERS ACTIVE ROSTER ===\n";
+        cout << left << setw(10) << "Card ID" << setw(25) << "Full Name" << "Primary Email Interface Address\n";
+        cout << string(65, '-') << "\n";
+
+        if (members.empty()) { cout << "No accounts exist inside database indices.\n"; return; }
+        for (const auto& m : members) m.displayRow();
+    }
+
+    
+    void saveSystemState() const {
+        ofstream bFile("books_db.txt");
+        ofstream mFile("members_db.txt");
+        ofstream rFile("ledgers_db.txt");
+
+        for (const auto& b : books) {
+            bFile << b.getId() << "|" << b.getTitle() << "|" << b.getAuthor() << "|" 
+                  << b.getIsbn() << "|" << b.getIssuedStatus() << "\n";
+        }
+        for (const auto& m : members) {
+            mFile << m.getId() << "|" << m.getName() << "|" << m.getEmail() << "\n";
+        }
+        for (const auto& r : records) {
+            rFile << r.getBookId() << "|" << r.getMemberId() << "|" << r.getIssueDate() << "|" 
+                  << r.getDueDate() << "|" << r.getReturnedStatus() << "\n";
+        }
+        cout << ">> Storage notification: Snapshot synchronization tables safely secured onto system disks.\n";
+    }
+
+    void loadSystemState() {
+        ifstream bFile("books_db.txt");
+        ifstream mFile("members_db.txt");
+        ifstream rFile("ledgers_db.txt");
+        string textLine;
+
+        books.clear(); members.clear(); records.clear();
+
+        if (bFile.is_open()) {
+            while (getline(bFile, textLine)) {
+                stringstream ss(textLine);
+                string id_s, title, author, isbn, issued_s;
+                getline(ss, id_s, '|'); getline(ss, title, '|'); getline(ss, author, '|');
+                getline(ss, isbn, '|'); getline(ss, issued_s, '|');
+                if (!id_s.empty()) {
+                    int id = stoi(id_s);
+                    books.emplace_back(id, title, author, isbn, (issued_s == "1"));
+                    if (id >= nextBookId) nextBookId = id + 1;
                 }
             }
-            prodIn.close();
+            bFile.close();
         }
-
-        if (txnIn.is_open()) {
-            while (getline(txnIn, line)) {
-                stringstream ss(line);
-                string id, upc, s_qty, s_price, time;
-                
-                getline(ss, id, '|');
-                getline(ss, upc, '|');
-                getline(ss, s_qty, '|');
-                getline(ss, s_price, '|');
-                getline(ss, time, '|');
-
-                if (!id.empty()) {
-                    history.emplace_back(id, upc, stoi(s_qty), stod(s_price), time);
+        if (mFile.is_open()) {
+            while (getline(mFile, textLine)) {
+                stringstream ss(textLine);
+                string id_s, name, email;
+                getline(ss, id_s, '|'); getline(ss, name, '|'); getline(ss, email, '|');
+                if (!id_s.empty()) {
+                    int id = stoi(id_s);
+                    members.emplace_back(id, name, email);
+                    if (id >= nextMemberId) nextMemberId = id + 1;
                 }
             }
-            txnIn.close();
+            mFile.close();
         }
-        cout << "\nData persistence structures mapped to localized memory pools successfully.\n";
+        if (rFile.is_open()) {
+            while (getline(rFile, textLine)) {
+                stringstream ss(textLine);
+                string bId_s, mId_s, iss_s, due_s, ret_s;
+                getline(ss, bId_s, '|'); getline(ss, mId_s, '|'); getline(ss, iss_s, '|');
+                getline(ss, due_s, '|'); getline(ss, ret_s, '|');
+                if (!bId_s.empty()) {
+                    records.emplace_back(stoi(bId_s), stoi(mId_s), stol(iss_s), stol(due_s), (ret_s == "1"));
+                }
+            }
+            rFile.close();
+        }
     }
 };
 
-void renderMenu() {
+
+void displayMenu() {
     cout << "\n=========================================";
-    cout << "\n     STOCKGUARD INVENTORY SYSTEMS";
+    cout << "\n      LIBRARY MANAGEMENT INTERFACE       ";
     cout << "\n=========================================";
-    cout << "\n1.  Add New Retail Product Asset";
-    cout << "\n2.  Scan & Log POS Sales Transaction";
-    cout << "\n3.  Dynamic Stock Search Engine Query";
-    cout << "\n4.  Print Master Asset Catalog Sheet";
-    cout << "\n5.  Generate Low Stock Alert Metrics";
-    cout << "\n6.  Purge Obsolete Core Product SKU";
-    cout << "\n7.  Commit Local Cache Changes to Disk";
-    cout << "\n8.  Reload System Master Log Data Files";
-    cout << "\n0.  Safely Close Session Terminal Pipeline";
+    cout << "\n 1. Register New Book Asset";
+    cout << "\n 2. Enroll New Active Member";
+    cout << "\n 3. Issue Book Asset (Loan Transaction)";
+    cout << "\n 4. Return Book Asset (Inbound Check-in)";
+    cout << "\n 5. Search Catalog (Title / Author)";
+    cout << "\n 6. Show Entire Inventory Catalog";
+    cout << "\n 7. Show Enrolled Membership Roster";
+    cout << "\n 0. Save Configuration & Exit Session";
     cout << "\n=========================================";
-    cout << "\nProcess Option Routing Request Selection: ";
+    cout << "\nSelect routing index parameter option: ";
 }
 
 int main() {
-    InventorySystem ims("Global Retail Hub");
-    int choice;
+    LibraryManager coreEngine;
+    int systemRouteCode;
 
-    ims.loadData();
+    coreEngine.loadSystemState();
 
     while (true) {
-        system("clear || cls");
-        renderMenu();
-        
-        if (!(cin >> choice)) {
-            cout << "\nStream evaluation tracking error! Supply integers (0-8).\n";
+        displayMenu();
+        if (!(cin >> systemRouteCode)) {
+            cout << "\nStream entry validation exception error: Numbers only.\n";
             cin.clear();
             cin.ignore(10000, '\n');
-            cout << "Awaiting confirmation input step mechanism key signal...";
-            cin.get();
             continue;
         }
-        cin.ignore();
+        cin.ignore(10000, '\n');
 
-        switch (choice) {
-            case 1: ims.addProduct(); break;
-            case 2: ims.registerSale(); break;
-            case 3: ims.searchInventory(); break;
-            case 4: ims.displayAllInventory(); break;
-            case 5: ims.displayLowStockReport(); break;
-            case 6: ims.deleteProduct(); break;
-            case 7: ims.saveData(); break;
-            case 8: ims.loadData(); break;
+        switch (systemRouteCode) {
+            case 1: coreEngine.addBook(); break;
+            case 2: coreEngine.addMember(); break;
+            case 3: coreEngine.issueBook(); break;
+            case 4: coreEngine.returnBook(); break;
+            case 5: coreEngine.searchBooks(); break;
+            case 6: coreEngine.listAllBooks(); break;
+            case 7: coreEngine.listAllMembers(); break;
             case 0:
-                ims.saveData();
-                cout << "\nSession environment context destruction sequence complete. Exiting.\n";
+                coreEngine.saveSystemState();
+                cout << "\nClosing engine tasks context safely. Core environments dropped. Goodbye.\n";
                 return 0;
             default:
-                cout << "\nRouting indexing range fault limit violation. Pick 0-8 entries.\n";
+                cout << "\nRoute selection bounds exception tracking error. Re-try selection code parameters.\n";
         }
-
-        cout << "\nPress Enter to return back to option tree routing mapping panel...";
+        
+        cout << "\nPress Enter to return to main tracking dashboard system menu...";
         cin.get();
     }
     return 0;
