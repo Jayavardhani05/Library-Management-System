@@ -1,124 +1,186 @@
-# Library-Management-System
+# Inventory Management System
 
-1. Introduction
+---
 
-The StockGuard Inventory Management System is a console-based application developed using C++ that manages retail inventory efficiently. The system maintains product information, sales transactions, inventory tracking, and stock monitoring.
+# 1. Introduction
 
-The project is designed to automate inventory-related tasks such as:
+The **StockGuard Inventory Management System** is a console-based retail inventory tracking application developed using **C++** programming language.
 
-Adding new products
-Searching inventory
-Processing sales transactions
-Monitoring low-stock products
-Removing obsolete products
-Saving and loading inventory data
+The project is designed to manage retail product inventories efficiently by providing functionalities such as:
 
-The application implements Object-Oriented Programming (OOP) concepts and file handling mechanisms to ensure permanent data storage and maintain data consistency.
+* Product registration
+* Point-of-sale transaction handling
+* Inventory searching
+* Low stock alerts
+* Product deletion
+* File-based permanent storage
 
-The project simulates real-world retail inventory systems used in supermarkets, warehouses, and retail businesses.
+The system simulates a real-world inventory management environment used in:
 
-2. Objectives of the Project
+* Retail stores
+* Warehouses
+* Supermarkets
+* Department stores
+* Distribution centers
 
-The objectives of the Inventory Management System are:
+This project demonstrates practical implementation of:
 
-To understand Object-Oriented Programming concepts
-To implement inventory tracking mechanisms
-To manage retail products efficiently
-To perform sales transaction management
-To use file handling for permanent storage
-To understand data validation techniques
-3. Technologies Used
-Technology	Purpose
-C++	Core programming language
-File Handling	Permanent data storage
-Vectors	Dynamic storage of products
-String Streams	Data parsing
-OOP	Encapsulation and modularity
-STL Algorithms	Searching and manipulation
-4. Features of the System
-4.1 Product Registration
+* Object-Oriented Programming (OOP)
+* File Handling
+* Inventory Tracking Logic
+* Barcode Validation (UPC-A)
+* Transaction Logging
+* Dynamic Data Structures
 
-The system allows users to:
+---
 
-Add new products
-Assign UPC code
-Specify category
-Set pricing information
-Set stock quantity
-Set reorder threshold
+# 2. Objectives of the Project
 
-Validation includes:
+The main objectives of this project are:
 
-UPC validation
-Empty field checking
-Duplicate product detection
-Quantity range checking
-4.2 Point of Sale (POS) Transaction
+* To build a complete inventory management system
+* To implement retail product tracking logic
+* To understand file handling in C++
+* To simulate barcode-based product systems
+* To perform stock monitoring operations
+* To develop real-world business management logic
+
+---
+
+# 3. Technologies Used
+
+| Technology    | Purpose                         |
+| ------------- | ------------------------------- |
+| C++           | Core Programming Language       |
+| STL Vector    | Dynamic storage                 |
+| File Handling | Persistent data storage         |
+| OOP Concepts  | Class-based modular programming |
+| StringStream  | Data parsing                    |
+| Time Library  | Timestamp generation            |
+
+---
+
+# 4. Core Features of the System
+
+---
+
+# 4.1 Add New Product
+
+The system allows:
+
+* Product registration
+* UPC validation
+* Retail price setup
+* Stock quantity assignment
+
+### Product Details Stored
+
+* UPC
+* Product Name
+* Category
+* Cost Price
+* Retail Price
+* Stock Quantity
+* Reorder Threshold
+
+---
+
+# 4.2 POS Sales Transaction
+
+The Point-of-Sale system allows:
+
+* Product barcode scanning
+* Sales processing
+* Automatic stock deduction
+* Sales history recording
+
+---
+
+# 4.3 Inventory Search
 
 Users can:
 
-Scan product UPC
-Enter quantity purchased
-Generate sales records
-Automatically reduce stock
-4.3 Inventory Search
+* Search by product name
+* Search by category
 
-Users can search inventory using:
+---
 
-Product Name
-Category
-4.4 Inventory Catalog
+# 4.4 Low Stock Alert System
 
-Displays:
+The system identifies:
 
-UPC
-Product Name
-Category
-Retail Price
-Stock Quantity
-4.5 Low Stock Monitoring
+* Products below reorder threshold
+* Items needing replenishment
 
-Automatically identifies:
+---
 
-Products below reorder threshold
-Products requiring replenishment
-4.6 Product Deletion
+# 4.5 Product Deletion
 
 Allows:
 
-Safe removal of obsolete products
-Soft deletion using status flag
-4.7 Data Persistence
+* Safe removal of obsolete products
+* Soft deletion mechanism
 
-Inventory and sales history are stored in:
+---
 
-inventory_sheet.txt
-sales_history.txt
-5. System Architecture
-+--------------------------------+
-|         User Interface         |
-+--------------------------------+
-               |
-               v
-+--------------------------------+
-|       Inventory System         |
-+--------------------------------+
-      |       |         |
-      v       v         v
- Product  Transaction  Reports
-      |
-      v
-+--------------------------------+
-|       File Storage System      |
-| inventory_sheet.txt            |
-| sales_history.txt              |
-+--------------------------------+
-6. Classes Used in the System
-6.1 Product Class
+# 4.6 File Saving and Loading
 
-Represents product information.
+Stores:
 
-Data Members
+* Inventory records
+* Transaction history
+
+---
+
+# 5. System Architecture
+
+```text
++------------------------------------------------+
+|              USER INTERFACE MENU               |
++------------------------------------------------+
+                     |
+                     v
++------------------------------------------------+
+|             INVENTORY SYSTEM CLASS             |
++------------------------------------------------+
+   |        |          |         |         |
+   v        v          v         v         v
+ Add      Search     Sales    Reports   Delete
+ Product  Product   System    Alerts    Product
+                     |
+                     v
++------------------------------------------------+
+| inventory_sheet.txt / sales_history.txt        |
++------------------------------------------------+
+```
+
+---
+
+# 6. Object-Oriented Programming Concepts Used
+
+| OOP Concept   | Usage                                  |
+| ------------- | -------------------------------------- |
+| Class         | Product, Transaction, InventorySystem  |
+| Encapsulation | Private data members                   |
+| Constructors  | Product and transaction initialization |
+| Abstraction   | Business logic hidden inside methods   |
+| Modularity    | Separate functions for operations      |
+
+---
+
+# 7. Class Explanation
+
+---
+
+# 7.1 Product Class
+
+Represents individual retail products.
+
+---
+
+## Data Members
+
+```cpp
 string upc;
 string name;
 string category;
@@ -127,336 +189,757 @@ double retailPrice;
 int stockQuantity;
 int reorderPoint;
 bool isDeleted;
-Functions
-Function	Purpose
-getUPC()	Returns UPC
-getName()	Returns product name
-getCategory()	Returns category
-getCostPrice()	Returns cost
-getRetailPrice()	Returns selling price
-getStockQuantity()	Returns stock quantity
-setStockQuantity()	Updates quantity
-setDeleted()	Marks deleted
-needsReorder()	Checks stock status
-6.2 Transaction Class
+```
 
-Stores sales transaction details.
+---
 
-Data Members
+## Member Functions
+
+| Function           | Purpose                |
+| ------------------ | ---------------------- |
+| getUPC()           | Returns UPC            |
+| getName()          | Returns product name   |
+| getCategory()      | Returns category       |
+| getRetailPrice()   | Returns selling price  |
+| setStockQuantity() | Updates stock          |
+| needsReorder()     | Checks low stock       |
+| toString()         | Formats display output |
+
+---
+
+# 7.2 Transaction Class
+
+Represents sales transactions.
+
+---
+
+## Data Members
+
+```cpp
 string transactionId;
 string upc;
 int quantitySold;
 double unitPrice;
 string timestamp;
-Functions
-Function	Purpose
-getTransactionId()	Returns transaction ID
-getUPC()	Returns UPC
-getQuantitySold()	Returns quantity sold
-getTotalRevenue()	Calculates revenue
-getTimestamp()	Returns time
-6.3 InventorySystem Class
+```
 
-Controls the complete inventory operations.
+---
 
-Functions include:
+# 7.3 InventorySystem Class
 
-Function	Purpose
-addProduct()	Add product
-registerSale()	Process sales
-searchInventory()	Search products
-displayAllInventory()	Display products
-displayLowStockReport()	Low stock report
-deleteProduct()	Delete product
-saveData()	Save files
-loadData()	Load files
+Handles:
 
-7. File Handling
+* Product management
+* Sales management
+* File handling
+* Search operations
+* Reports
 
-Two files are used:
+---
 
-Product Storage
-inventory_sheet.txt
+# 8. UPC-A Barcode Validation
 
-Example:
+The project validates:
 
-123456789012|Milk|Dairy|35|50|120|10
-987654321098|Bread|Bakery|20|30|75|5
-Transaction Storage
-sales_history.txt
+* 12-digit UPC-A codes
+* Barcode checksum correctness
 
-Example:
+---
 
-TXN1000|123456789012|3|50|2026-05-20 12:30
-TXN1001|987654321098|2|30|2026-05-20 12:45
-8. Validation Mechanisms
+# Example Valid UPC
+
+```text
+036000291452
+```
+
+---
+
+# Validation Logic
+
+The system:
+
+* Calculates odd/even digit sums
+* Computes check digit
+* Verifies barcode authenticity
+
+---
+
+# 9. File Handling
+
+The system uses:
+
+| File                | Purpose                   |
+| ------------------- | ------------------------- |
+| inventory_sheet.txt | Stores products           |
+| sales_history.txt   | Stores sales transactions |
+
+---
+
+# Example Inventory File
+
+```text
+036000291452|Laptop|Electronics|45000|55000|20|5
+123456789012|Keyboard|Accessories|500|900|50|10
+```
+
+---
+
+# Example Transaction File
+
+```text
+TXN1000|036000291452|2|55000|2026-05-20 10:45
+```
+
+---
+
+# 10. Input Validation
 
 The system validates:
 
-Validation Type	Description
-UPC Validation	Verifies 12-digit UPC
-Empty Strings	Rejects blank values
-Price Validation	Limits price range
-Quantity Validation	Restricts stock values
-Duplicate UPC	Prevents duplicates
-9. Program Workflow
-Step 1
+| Validation       | Description                 |
+| ---------------- | --------------------------- |
+| UPC Validation   | Checks barcode authenticity |
+| Empty Inputs     | Prevents blank names        |
+| Price Validation | Rejects invalid prices      |
+| Stock Validation | Prevents negative stock     |
+| Menu Validation  | Handles wrong menu choices  |
 
-Load existing inventory data
+---
 
-↓
+# 11. Program Workflow
 
-Step 2
+---
 
-Display main menu
+## Step 1
 
-↓
+System loads saved inventory.
 
-Step 3
+---
 
-User selects operation
+## Step 2
 
-↓
+Main menu is displayed.
 
-Step 4
+---
 
-Perform requested task
+## Step 3
 
-↓
+User selects operation.
 
-Step 5
+---
 
-Update inventory data
+## Step 4
 
-↓
+Requested operation executes.
 
-Step 6
+---
 
-Save updated records
+## Step 5
 
-↓
+Inventory updates dynamically.
 
-Step 7
+---
 
-Return to menu
+## Step 6
 
-10. Complete Detailed Input and Output
-10.1 Main Menu
-Output
+Data saved into files.
+
+---
+
+# 12. COMPLETE DETAILED INPUT AND OUTPUT
+
+---
+
+# 12.1 Main Menu
+
+## Output
+
+```text
 =========================================
      STOCKGUARD INVENTORY SYSTEMS
 =========================================
-1. Add New Retail Product Asset
-2. Scan & Log POS Sales Transaction
-3. Dynamic Stock Search Engine Query
-4. Print Master Asset Catalog Sheet
-5. Generate Low Stock Alert Metrics
-6. Purge Obsolete Core Product SKU
-7. Commit Local Cache Changes to Disk
-8. Reload System Master Log Data Files
-0. Safely Close Session Terminal Pipeline
+1.  Add New Retail Product Asset
+2.  Scan & Log POS Sales Transaction
+3.  Dynamic Stock Search Engine Query
+4.  Print Master Asset Catalog Sheet
+5.  Generate Low Stock Alert Metrics
+6.  Purge Obsolete Core Product SKU
+7.  Commit Local Cache Changes to Disk
+8.  Reload System Master Log Data Files
+0.  Safely Close Session Terminal Pipeline
 =========================================
 
 Process Option Routing Request Selection:
-10.2 Add New Product
-Input
+```
+
+---
+
+# 12.2 Add New Product
+
+## User Input
+
+```text
 1
-123456789012
-Milk
-Dairy
-35
-50
-100
-10
-Output
+036000291452
+Gaming Laptop
+Electronics
+45000
+55000
+20
+5
+```
+
+---
+
+## System Output
+
+```text
 === REGISTER NEW PRODUCT INVENTORY ===
 
-Enter 12-Digit UPC: 123456789012
-Enter Product Name: Milk
-Enter Category Group: Dairy
-Enter Wholesale/Cost Price ($):35
-Enter Target Retail Price ($):50
-Enter Initial Stock Level (0-5000):100
-Enter Reorder Warning Threshold Level (1-100):10
+Enter 12-Digit UPC:
+036000291452
 
-SKU item 'Milk' registered seamlessly into current system tracking.
-10.3 Display Inventory
-Input
+Enter Product Name:
+Gaming Laptop
+
+Enter Category Group:
+Electronics
+
+Enter Wholesale/Cost Price ($):
+45000
+
+Enter Target Retail Price ($):
+55000
+
+Enter Initial Stock Level (0-5000):
+20
+
+Enter Reorder Warning Threshold Level (1-100):
+5
+
+SKU item 'Gaming Laptop' registered seamlessly into current system tracking.
+```
+
+---
+
+# 12.3 Invalid UPC Entry
+
+## User Input
+
+```text
+1
+123456789000
+```
+
+---
+
+## System Output
+
+```text
+=== REGISTER NEW PRODUCT INVENTORY ===
+
+Enter 12-Digit UPC:
+123456789000
+
+Invalid UPC Checksum!
+
+Hint: Must be exactly 12 digits matching standard barcode metrics.
+
+Please try again.
+```
+
+---
+
+# 12.4 Add Another Product
+
+## User Input
+
+```text
+1
+042100005264
+Mechanical Keyboard
+Accessories
+1500
+2500
+50
+10
+```
+
+---
+
+## System Output
+
+```text
+SKU item 'Mechanical Keyboard'
+registered seamlessly into current system tracking.
+```
+
+---
+
+# 12.5 Display All Inventory
+
+## User Input
+
+```text
 4
-Output
+```
+
+---
+
+## System Output
+
+```text
 === SYSTEM SHEET MASTER OVERVIEW INVENTORY ===
 
-UPC          Item Name            Category      Retail   Stock
------------------------------------------------------------------
-123456789012 Milk                 Dairy         $50.00   100
-987654321098 Bread                Bakery        $30.00   75
-10.4 Register Sale
-Input
-2
-123456789012
-5
-Output
-=== PROCESS RETAIL CASH POINT SALE ===
+UPC           Item Name            Category       Retail    Stock
+-----------------------------------------------------------------------
 
-Scan Item UPC:123456789012
+036000291452  Gaming Laptop        Electronics    $55000    20
+042100005264  Mechanical Keyboard  Accessories    $2500     50
+```
 
-Discovered: Milk
-Available units:100
+---
 
-Enter Quantity to Purchase:5
+# 12.6 Search Inventory
 
-Sale processed cleanly.
-Total Due: $250.00
-10.5 Search Inventory
-Input
+## User Input
+
+```text
 3
-Milk
-Output
+Electronics
+```
+
+---
+
+## System Output
+
+```text
 === INVENTORY QUERY SEARCH ===
 
-UPC          Item Name            Category      Retail   Stock
-=================================================================
-123456789012 Milk                 Dairy         $50.00   95
-10.6 Low Stock Report
-Input
+Query string (Name/Category):
+Electronics
+
+UPC           Item Name            Category       Retail    Stock
+=======================================================================
+
+036000291452  Gaming Laptop        Electronics    $55000    20
+```
+
+---
+
+# 12.7 Search Product by Name
+
+## User Input
+
+```text
+3
+Keyboard
+```
+
+---
+
+## System Output
+
+```text
+UPC           Item Name            Category       Retail    Stock
+=======================================================================
+
+042100005264  Mechanical Keyboard  Accessories    $2500     50
+```
+
+---
+
+# 12.8 Product Not Found Search
+
+## User Input
+
+```text
+3
+Mobile
+```
+
+---
+
+## System Output
+
+```text
+No specific retail inventory targets fit context filter details.
+```
+
+---
+
+# 12.9 Process Sales Transaction
+
+## User Input
+
+```text
+2
+036000291452
+2
+```
+
+---
+
+## System Output
+
+```text
+=== PROCESS RETAIL CASH POINT SALE ===
+
+Scan Item UPC:
+036000291452
+
+Discovered: Gaming Laptop | Available units: 20
+
+Enter Quantity to Purchase (1-20):
+2
+
+Sale processed cleanly.
+
+Total Due: $110000.00
+```
+
+---
+
+# 12.10 Low Stock Warning Sale
+
+## User Input
+
+```text
+2
+036000291452
+18
+```
+
+---
+
+## System Output
+
+```text
+Sale processed cleanly.
+
+Total Due: $990000.00
+
+[WARNING]:
+Running critically low on 'Gaming Laptop' stock items.
+```
+
+---
+
+# 12.11 Out of Stock Scenario
+
+## User Input
+
+```text
+2
+036000291452
+1
+```
+
+---
+
+## System Output
+
+```text
+Operation aborted:
+'Gaming Laptop' is completely out of stock!
+```
+
+---
+
+# 12.12 Generate Low Stock Report
+
+## User Input
+
+```text
 5
-Output
+```
+
+---
+
+## System Output
+
+```text
 === CRITICAL LOW REORDER SYSTEM DATA REPORT ===
 
-UPC          Item Name          Category      Retail    Current Stock
+UPC           Item Name            Category       Retail    Current Stock
 -----------------------------------------------------------------------
-987654321098 Bread              Bakery        $30.00    3
 
+036000291452  Gaming Laptop        Electronics    $55000    0
 [Needs 15 replenishment units]
-10.7 Delete Product
-Input
+```
+
+---
+
+# 12.13 Delete Product
+
+## User Input
+
+```text
 6
-123456789012
-Output
+042100005264
+```
+
+---
+
+## System Output
+
+```text
 Provide target UPC data line sequence to clear tracking reference:
 
-123456789012
+042100005264
 
-Tracking data line for element item 'Milk' set to safe drop state.
-10.8 Save Data
-Input
+Tracking data line for element item
+'Mechanical Keyboard'
+set to safe drop state.
+```
+
+---
+
+# 12.14 Save Data to Disk
+
+## User Input
+
+```text
 7
-Output
-File streaming pipelines finalized.
-Data safe storage state verified.
-10.9 Load Data
-Input
-8
-Output
-Data persistence structures mapped to localized memory pools successfully.
-10.10 Exit Program
-Input
-0
-Output
-Session environment context destruction sequence complete.
-Exiting.
-11. Advantages of the Project
-Fast inventory searching
-Permanent data storage
-Low stock monitoring
-Product categorization
-Sales tracking
-Input validation
-Easy user interface
-12. Limitations
-No graphical user interface
-Single-user system
-No database connectivity
-No login authentication
-No cloud storage support
+```
 
-13. Future Enhancements
-Database Integration
+---
+
+## System Output
+
+```text
+File streaming pipelines finalized.
+
+Data safe storage state verified.
+```
+
+---
+
+# 12.15 Reload Data Files
+
+## User Input
+
+```text
+8
+```
+
+---
+
+## System Output
+
+```text
+Data persistence structures mapped to localized memory pools successfully.
+```
+
+---
+
+# 12.16 Exit Application
+
+## User Input
+
+```text
+0
+```
+
+---
+
+## System Output
+
+```text
+Session environment context destruction sequence complete.
+
+Exiting.
+```
+
+---
+
+# 13. Advantages of the System
+
+* Fast inventory tracking
+* Barcode validation support
+* Dynamic stock monitoring
+* Sales history tracking
+* Automatic low stock alerts
+* Persistent file storage
+* Beginner-friendly implementation
+
+---
+
+# 14. Limitations of the System
+
+* No graphical interface
+* No database integration
+* Single-user operation
+* No cloud synchronization
+* No employee authentication
+* No invoice printing
+
+---
+
+# 15. Future Enhancements
+
+---
+
+# 15.1 Database Integration
 
 Replace text files with:
 
-MySQL
-MongoDB
-SQLite
-Authentication System
+* MySQL
+* MongoDB
+* PostgreSQL
+
+---
+
+# 15.2 Barcode Scanner Integration
 
 Add:
 
-Username login
-Password encryption
-Admin access control
-Barcode Scanner Integration
+* Real barcode scanner support
+* QR code inventory tracking
 
-Allow:
+---
 
-Real barcode scanning
-Automatic product retrieval
-Sales Analytics Dashboard
+# 15.3 Billing System
 
 Generate:
 
-Daily revenue reports
-Monthly sales charts
-Product performance analysis
-GUI Interface
+* Customer invoices
+* GST bills
+* Receipt printing
 
-Develop using:
+---
 
-Qt Framework
-C++ GUI libraries
-Cloud Synchronization
+# 15.4 Authentication System
 
-Enable:
+Add:
 
-Online inventory updates
-Multi-system synchronization
-AI-based Inventory Prediction
+* Admin login
+* Employee accounts
+* Password protection
+
+---
+
+# 15.5 GUI Dashboard
+
+Develop graphical software using:
+
+* Qt Framework
+* Electron
+* Web Dashboard
+
+---
+
+# 15.6 Sales Analytics
 
 Implement:
 
-Demand forecasting
-Stock prediction
-Automated reorder suggestions
-14. GitHub Commands
-Clone Repository
-git clone <repository-url>
+* Revenue reports
+* Best-selling products
+* Profit calculations
 
-Example:
+---
 
-git clone https://github.com/username/inventory-management-system.git
-Move into Project Folder
-cd inventory-management-system
-Compile Program
+# 15.7 Cloud Storage
+
+Enable:
+
+* Online inventory sync
+* Multi-branch inventory access
+
+---
+
+# 16. GitHub Commands
+
+---
+
+# Clone Repository
+
+```bash
+git clone https://github.com/Jayavardhani05/Library-Management-System.git
+```
+---
+
+# Navigate to Folder
+
+```bash
+cd Library-Management-System
+
+```
+
+---
+
+# Compile Program
+
+```bash
 g++ main.cpp -o inventory
-Run Program
-Windows
+```
+
+---
+
+# Run Program
+
+## Windows
+
+```bash
 inventory.exe
-Linux/Mac
+```
+
+## Linux / Mac
+
+```bash
 ./inventory
-15. Git Commands for Uploading
+```
 
-Initialize Git:
+---
 
+# 17. Git Commands for Uploading
+
+---
+
+## Initialize Git
+
+```bash
 git init
+```
 
-Add Files:
+---
 
+## Add Files
+
+```bash
 git add .
+```
 
-Commit Files:
+---
 
-git commit -m "Initial Commit"
+## Commit Changes
 
-Connect Repository:
+```bash
+git commit -m "Initial commit"
+```
 
-git remote add origin https://github.com/username/inventory-management-system.git
+---
 
-Push Project:
+## Add Remote Repository
 
+```bash
+git remote add origin https://github.com/Jayavardhani05/Library-Management-System.git
+```
+
+---
+
+## Push Repository
+
+```bash
 git branch -M main
 git push -u origin main
+```
 
-16. Folder Structure
+---
+
+# 18. Folder Structure
+
+```text
 Inventory-Management-System/
 │
 ├── main.cpp
@@ -464,20 +947,36 @@ Inventory-Management-System/
 ├── sales_history.txt
 ├── README.md
 └── .gitignore
+```
 
-17. README Description
-StockGuard Inventory Management System is a console-based C++ application developed using Object-Oriented Programming and File Handling concepts. The application manages products, inventory stock, sales transactions, and low-stock monitoring with permanent data storage.
-18. Conclusion
+---
 
-The StockGuard Inventory Management System successfully demonstrates the implementation of inventory control mechanisms using C++.
+# 19. README.md Short Description
 
-The system integrates:
+```md
+A console-based Inventory Management System built using C++ and File Handling.
 
-Object-Oriented Programming
-Dynamic data structures
-File persistence
-Product tracking
-Sales management
-Input validation
+The system supports:
+- Product registration
+- UPC barcode validation
+- POS sales transactions
+- Inventory search
+- Low stock alerts
+- Persistent file storage
+```
 
-The project provides a practical understanding of how retail inventory systems function in real-world environments and creates a foundation for future enterprise-level inventory applications.
+---
+
+# 20. Conclusion
+
+The **StockGuard Inventory Management System** successfully demonstrates how modern inventory and retail tracking systems can be implemented using C++ and file handling concepts.
+
+The project effectively combines:
+
+* Object-Oriented Programming
+* Barcode validation
+* Inventory control logic
+* Sales transaction management
+* File persistence mechanisms
+
+This system serves as a strong foundation for developing advanced retail management software and provides practical exposure to real-world inventory tracking operations.
